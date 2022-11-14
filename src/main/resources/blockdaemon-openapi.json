@@ -1,0 +1,3996 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "3.0.0",
+    "title": "Ubiquity REST API",
+    "description": "Ubiquity provides a RESTful and uniform way to access blockchain resources,\nwith a rich and reusable model across multiple cryptocurrencies.\n\n[Documentation](https://app.blockdaemon.com/docs/ubiquity)\n\n### Protocols\n#### Mainnet\nThe following protocols are currently supported:\n* algorand\n* bitcoin\n* bitcoincash\n* dogecoin\n* ethereum\n* litecoin\n* near\n* oasis\n* polkadot\n* solana\n* stellar\n* tezos\n* xrp\n\n#### Testnet\n* bitcoin/testnet\n* bitcoincash/testnet\n* dogecoin/testnet\n* ethereum/goerli\n* litecoin/testnet\n\n#### Native\nUbiquity provides native access to all Blockchain nodes it supports.\n* bitcoin/(mainnet | testnet) - [RPC Documentation](https://developer.bitcoin.org/reference/rpc/)\n* ethereum/(mainnet | goerli) - [RPC Documentation](https://ethereum.org/en/developers/docs/apis/json-rpc/)\n* polkadot/mainnet - [Sidecar API Documentation](https://paritytech.github.io/substrate-api-sidecar/dist/)\n* polkadot/mainnet/http-rpc - [Polkadot RPC Documentation](https://polkadot.js.org/docs/substrate/rpc/)\n* algorand/mainnet - [Algod API Documentation](https://developer.algorand.org/docs/reference/rest-apis/algod/)\n* stellar/mainnet - [Stellar Horizon API Documentation](https://developers.stellar.org/api)\n* dogecoin/(mainnet | testnet) - [Dogecoin API Documentaion](https://developer.bitcoin.org/reference/rpc/)\n* oasis/mainnet - [Oasis Rosetta Gateway Documentation](https://www.rosetta-api.org/docs/api_identifiers.html#network-identifier)\n* near/mainnet - [NEAR RPC Documentation](https://docs.near.org/docs/api/rpc)\n* litecoin/mainnet - [Litecoin RPC Documentation](https://litecoin.info/index.php/Litecoin_API)\n* bitcoincash/mainnet - [Bitcoin Cash RPC Documentation](https://docs.bitcoincashnode.org/doc/json-rpc/)\n* tezos/mainnet - [Tezos RPC Documentation](https://tezos.gitlab.io/developer/rpc.html)\n\n\nA full URL example: https://svc.blockdaemon.com/universal/v1/bitcoin/mainnet\n\n##### Pagination\nCertain resources contain a lot of data, more than what's practical\nto return for a single request.\nWith the help of pagination, the data is split across multiple responses.\nEach response returns a subset of the items requested, and a continuation token.\n\nTo get the next batch of items, copy the returned continuation token\nto the continuation query parameter and repeat the request with the new URL.\nIn case no continuation token is returned, there is no more data available.\n",
+    "contact": {
+      "name": "Blockdaemon",
+      "email": "support@blockdaemon.com",
+      "url": "https://blockdaemon.com"
+    },
+    "x-logo": {
+      "url": "logo.png"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://svc.blockdaemon.com/universal/{version}",
+      "description": "Production server",
+      "variables": {
+        "version": {
+          "enum": [
+            "v1"
+          ],
+          "default": "v1"
+        }
+      }
+    },
+    {
+      "url": "https://ubiquity.api.blockdaemon.com/{version}",
+      "description": "[Legacy Auth] Production server",
+      "variables": {
+        "version": {
+          "enum": [
+            "v1"
+          ],
+          "default": "v1"
+        }
+      }
+    },
+    {
+      "url": "https://svc.blockdaemon.com/nft/{version}",
+      "description": "NFT Production server",
+      "variables": {
+        "version": {
+          "enum": [
+            "v1"
+          ],
+          "default": "v1"
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "name": "Protocols"
+    },
+    {
+      "name": "Accounts"
+    },
+    {
+      "name": "Blocks"
+    },
+    {
+      "name": "Transactions"
+    },
+    {
+      "name": "Sync"
+    },
+    {
+      "name": "NFT"
+    }
+  ],
+  "security": [
+    {
+      "bearerAuth": []
+    },
+    {
+      "apiKeyAuthHeader": []
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Protocols overview",
+        "operationId": "GetProtocolsList",
+        "tags": [
+          "Protocols"
+        ],
+        "description": "Provides a list of supported protocols and networks.\n",
+        "responses": {
+          "200": {
+            "description": "Protocols overview",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/protocols_overview"
+                },
+                "example": {
+                  "protocols": [
+                    {
+                      "handle": "algorand",
+                      "network": "mainnet"
+                    },
+                    {
+                      "handle": "bitcoin",
+                      "network": "mainnet"
+                    },
+                    {
+                      "handle": "bitcoin",
+                      "network": "testnet"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}": {
+      "get": {
+        "summary": "Protocol Info",
+        "operationId": "GetProtocolEndpoints",
+        "tags": [
+          "Protocols"
+        ],
+        "description": "Provides information about supported endpoints and generic protocol information.\n",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/protocol"
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Protocol overview",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/protocol_detail"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/tx/estimate_fee": {
+      "get": {
+        "summary": "Get fee estimate",
+        "description": "Get a fee estimation in decimals from the ubiquity fee estimation service.\nCurrently supported for Bitcoin and Ethereum. Endpoint will return 3 fee estimations\nfast, medium and slow\n",
+        "operationId": "FeeEstimate",
+        "tags": [
+          "Transactions"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "protocol",
+            "required": true,
+            "description": "Protocol handle",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Bitcoin": {
+                "value": "bitcoin"
+              },
+              "Bitcoin Cash": {
+                "value": "bitcoincash"
+              },
+              "Ethereum": {
+                "value": "ethereum"
+              },
+              "Litecoin": {
+                "value": "litecoin"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Protocols overview",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/fee_estimate"
+                },
+                "example": {
+                  "most_recent_block": 714408,
+                  "estimated_fees": {
+                    "fast\"": 5,
+                    "medium": 3,
+                    "slow": 2
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/account/{address}": {
+      "get": {
+        "summary": "Balances Of Address",
+        "operationId": "GetListOfBalancesByAddress",
+        "description": "Returns the account balances for all supported currencies.\n",
+        "tags": [
+          "Accounts"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "protocol",
+            "required": true,
+            "description": "Protocol handle",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Algorand": {
+                "value": "algorand"
+              },
+              "Bitcoin": {
+                "value": "bitcoin"
+              },
+              "Bitcoincash": {
+                "value": "bitcoincash"
+              },
+              "Dogecoin": {
+                "value": "dogecoin"
+              },
+              "Ethereum": {
+                "value": "ethereum"
+              },
+              "Near": {
+                "value": "near"
+              },
+              "Litecoin": {
+                "value": "litecoin"
+              },
+              "Oasis": {
+                "value": "oasis"
+              },
+              "Polkadot": {
+                "value": "polkadot"
+              },
+              "Ripple": {
+                "value": "xrp"
+              },
+              "Solana": {
+                "value": "solana"
+              },
+              "Stellar": {
+                "value": "stellar"
+              },
+              "Tezos": {
+                "value": "tezos"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          },
+          {
+            "$ref": "#/components/parameters/address"
+          },
+          {
+            "$ref": "#/components/parameters/assets"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Balances",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/balances"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/accounts": {
+      "post": {
+        "summary": "Balances Of Addresses",
+        "operationId": "GetListOfBalancesByAddresses",
+        "description": "Returns the balances of accounts for all supported currencies.\n",
+        "tags": [
+          "Accounts"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "protocol",
+            "required": true,
+            "description": "Protocol handle",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Algorand": {
+                "value": "algorand"
+              },
+              "Bitcoin": {
+                "value": "bitcoin"
+              },
+              "Bitcoincash": {
+                "value": "bitcoincash"
+              },
+              "Dogecoin": {
+                "value": "dogecoin"
+              },
+              "Ethereum": {
+                "value": "ethereum"
+              },
+              "Near": {
+                "value": "near"
+              },
+              "Litecoin": {
+                "value": "litecoin"
+              },
+              "Oasis": {
+                "value": "oasis"
+              },
+              "Polkadot": {
+                "value": "polkadot"
+              },
+              "Ripple": {
+                "value": "xrp"
+              },
+              "Solana": {
+                "value": "solana"
+              },
+              "Stellar": {
+                "value": "stellar"
+              },
+              "Tezos": {
+                "value": "tezos"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          },
+          {
+            "$ref": "#/components/parameters/assets"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/accounts_obj"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Balances",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/accounts_balances"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/account/{address}/report": {
+      "get": {
+        "summary": "A financial report for an address between a time period. Default timescale is within the last 30 days",
+        "operationId": "GetReportByAddress",
+        "description": "Returns account activity\n",
+        "tags": [
+          "Accounts"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "protocol",
+            "required": true,
+            "description": "Protocol handle",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Algorand": {
+                "value": "algorand"
+              },
+              "Polkadot": {
+                "value": "polkadot"
+              },
+              "Tezos": {
+                "value": "tezos"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          },
+          {
+            "$ref": "#/components/parameters/address"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "Unix Timestamp from where to start",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 961846434
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "Unix Timestamp from where to end",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1119612834
+          },
+          {
+            "name": "continuation",
+            "in": "query",
+            "required": false,
+            "description": "Continuation token from earlier response",
+            "schema": {
+              "type": "string"
+            },
+            "example": "xyz"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Max number of items to return in a response.\nDefaults to 50k and is capped at 100k.\n",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1000
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Account Activity",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/report"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "example": "Protocol,PublicAddress,Currency,EventID,Block,BlockTimestamp,BlockTime,Hash,Action,Value,SenderAddress,TransactionFee,SenderReward,RecipientReward,Close,CloseAmount,CloseReward\nAlgorand,GXL2EQ6JV54MTMP2IXOTF5CJLS7GAWMRDZMOY7JZAPO72AQRDDYGD6OX3E,ALGO,RNEYUT3MRYGT5ENSLIC7LGJCJMW6BXNS6SAW7A25DTYRW4TFJ5JA,8986217,1599745403,2020-09-10 13:43:23 +0000 UTC,RNEYUT3MRYGT5ENSLIC7LGJCJMW6BXNS6SAW7A25DTYRW4TFJ5JA,pay,1,T3BYUTYZCWV7UVK7IFYPC2UKH5VNBGVP4PUKSUBF5F6GQ244Y4I2XUWCQM,0.001,0.000003,0,,0,0\n"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "413": {
+            "description": "Too Many Transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "example": {
+                  "type": "unsupported",
+                  "code": 16390,
+                  "title": "Unsupported functionality",
+                  "status": 413,
+                  "detail": "current query size is too large for this account. try reducing query range (from, to)"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/account/{address}/utxo": {
+      "get": {
+        "summary": "Endpoint for getting transaction inputs and outputs for a given account.",
+        "operationId": "GetUTXOByAccount",
+        "description": "Returns transactions outputs following the BTC's UTXO model definition.\n",
+        "tags": [
+          "Accounts"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "protocol",
+            "required": true,
+            "description": "Protocol handle",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Bitcoin": {
+                "value": "bitcoin"
+              },
+              "Bitcoincash": {
+                "value": "bitcoincash"
+              },
+              "Dogecoin": {
+                "value": "dogecoin"
+              },
+              "Litecoin": {
+                "value": "litecoin"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          },
+          {
+            "$ref": "#/components/parameters/address"
+          },
+          {
+            "name": "spent",
+            "in": "query",
+            "description": "Whether the transaction output was spent or not",
+            "schema": {
+              "type": "boolean"
+            },
+            "example": true
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "Unix Timestamp from where to start",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 961846434
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "Unix Timestamp from where to end",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1119612834
+          },
+          {
+            "$ref": "#/components/parameters/order"
+          },
+          {
+            "name": "continuation",
+            "in": "query",
+            "required": false,
+            "description": "Continuation token from earlier response",
+            "schema": {
+              "type": "string"
+            },
+            "example": "xyz"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "description": "Max number of items to return in a response.\nDefaults to 50k and is capped at 100k.\n",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1000
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction outputs filtered by the given parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/tx_outputs"
+                }
+              },
+              "text/csv": {
+                "schema": {
+                  "type": "string",
+                  "example": "Protocol,PublicAddress,Currency,EventID,Block,BlockTimestamp,BlockTime,Hash,Action,Value,SenderAddress,TransactionFee,SenderReward,RecipientReward,Close,CloseAmount,CloseReward\nAlgorand,GXL2EQ6JV54MTMP2IXOTF5CJLS7GAWMRDZMOY7JZAPO72AQRDDYGD6OX3E,ALGO,RNEYUT3MRYGT5ENSLIC7LGJCJMW6BXNS6SAW7A25DTYRW4TFJ5JA,8986217,1599745403,2020-09-10 13:43:23 +0000 UTC,RNEYUT3MRYGT5ENSLIC7LGJCJMW6BXNS6SAW7A25DTYRW4TFJ5JA,pay,1,T3BYUTYZCWV7UVK7IFYPC2UKH5VNBGVP4PUKSUBF5F6GQ244Y4I2XUWCQM,0.001,0.000003,0,,0,0\n"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "413": {
+            "description": "Too Many Transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "example": {
+                  "type": "unsupported",
+                  "code": 16390,
+                  "title": "Unsupported functionality",
+                  "status": 413,
+                  "detail": "current query size is too large for this account. try reducing query range (from, to)"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/tx/{id}/confirmations": {
+      "get": {
+        "summary": "Transaction confirmations By Hash",
+        "operationId": "GetTxConfirmations",
+        "tags": [
+          "Transactions"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "protocol",
+            "required": true,
+            "description": "Protocol handle",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Bitcoin": {
+                "value": "bitcoin"
+              },
+              "Bitcoincash": {
+                "value": "bitcoincash"
+              },
+              "Dogecoin": {
+                "value": "dogecoin"
+              },
+              "Ethereum": {
+                "value": "ethereum"
+              },
+              "Litecoin": {
+                "value": "litecoin"
+              },
+              "Polkadot": {
+                "value": "polkadot"
+              },
+              "Tezos": {
+                "value": "tezos"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          },
+          {
+            "$ref": "#/components/parameters/tx-hash"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction confirmations",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/tx_confirmation"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/account/{address}/txs": {
+      "get": {
+        "summary": "Transactions Of Address",
+        "description": "Gets transactions that an address was involved with, from newest to oldest.\nThis call uses pagination.\n",
+        "operationId": "GetTxsByAddress",
+        "tags": [
+          "Accounts"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "protocol",
+            "required": true,
+            "description": "Protocol handle",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Algorand": {
+                "value": "algorand"
+              },
+              "Bitcoin": {
+                "value": "bitcoin"
+              },
+              "Bitcoincash": {
+                "value": "bitcoincash"
+              },
+              "Dogecoin": {
+                "value": "dogecoin"
+              },
+              "Ethereum": {
+                "value": "ethereum"
+              },
+              "Litecoin": {
+                "value": "litecoin"
+              },
+              "Polkadot": {
+                "value": "polkadot"
+              },
+              "Ripple": {
+                "value": "xrp"
+              },
+              "Solana": {
+                "value": "solana"
+              },
+              "Stellar": {
+                "value": "stellar"
+              },
+              "Tezos": {
+                "value": "tezos"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          },
+          {
+            "$ref": "#/components/parameters/address"
+          },
+          {
+            "$ref": "#/components/parameters/assets"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "required": false,
+            "description": "Unix Timestamp from where to start",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 961846434
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "required": false,
+            "description": "Unix Timestamp from where to end",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 1119612834
+          },
+          {
+            "$ref": "#/components/parameters/order"
+          },
+          {
+            "$ref": "#/components/parameters/continuation"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/tx_page"
+                }
+              }
+            },
+            "links": {
+              "Continuation": {
+                "operationId": "GetTxsByAddress",
+                "parameters": {
+                  "continuation": "$response.body#/Meta"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid address",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "example": {
+                  "type": "bad-request",
+                  "code": 16384,
+                  "title": "Invalid Address",
+                  "status": 400,
+                  "detail": "The requested address is invalid on this protocol"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "description": "Invalid continuation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "example": {
+                  "type": "forbidden",
+                  "code": 16389,
+                  "title": "Invalid Continuation",
+                  "status": 403,
+                  "detail": "The used continuation token is invalid."
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/tx/{id}": {
+      "get": {
+        "summary": "Transaction By Hash",
+        "operationId": "GetTx",
+        "tags": [
+          "Transactions"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "protocol",
+            "required": true,
+            "description": "Protocol handle",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Algorand": {
+                "value": "algorand"
+              },
+              "Bitcoin": {
+                "value": "bitcoin"
+              },
+              "Bitcoincash": {
+                "value": "bitcoincash"
+              },
+              "Dogecoin": {
+                "value": "dogecoin"
+              },
+              "Ethereum": {
+                "value": "ethereum"
+              },
+              "Litecoin": {
+                "value": "litecoin"
+              },
+              "Polkadot": {
+                "value": "polkadot"
+              },
+              "Ripple": {
+                "value": "xrp"
+              },
+              "Solana": {
+                "value": "solana"
+              },
+              "Stellar": {
+                "value": "stellar"
+              },
+              "Tezos": {
+                "value": "tezos"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Transaction ID/Hash",
+            "schema": {
+              "type": "string"
+            },
+            "example": "0xF00Fa860473130C1df10707223E66Cb4B839B165"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/tx"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/tx/{id}/{index}": {
+      "get": {
+        "summary": "Transaction output by hash and index",
+        "operationId": "GetTxByHashAndIndex",
+        "tags": [
+          "Transactions"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "protocol",
+            "required": true,
+            "description": "Protocol handle",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Bitcoin": {
+                "value": "bitcoin"
+              },
+              "Bitcoincash": {
+                "value": "bitcoincash"
+              },
+              "Dogecoin": {
+                "value": "dogecoin"
+              },
+              "Litecoin": {
+                "value": "litecoin"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Transaction ID/Hash",
+            "schema": {
+              "type": "string"
+            },
+            "example": "0xF00Fa860473130C1df10707223E66Cb4B839B165"
+          },
+          {
+            "name": "index",
+            "in": "path",
+            "required": true,
+            "description": "Transaction output index",
+            "schema": {
+              "type": "integer"
+            },
+            "example": 0
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transaction output",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/tx_output"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/txs": {
+      "get": {
+        "summary": "All Transactions",
+        "description": "Get all transactions on the protocol, starting with the lastest one. Each call returns a slice of the entire list. Use the returned continuation token to get the next part.",
+        "operationId": "GetTxs",
+        "tags": [
+          "Transactions"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "protocol",
+            "required": true,
+            "description": "Protocol handle",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Algorand": {
+                "value": "algorand"
+              },
+              "Bitcoin": {
+                "value": "bitcoin"
+              },
+              "Bitcoincash": {
+                "value": "bitcoincash"
+              },
+              "Litecoin": {
+                "value": "litecoin"
+              },
+              "Polkadot": {
+                "value": "polkadot"
+              },
+              "Tezos": {
+                "value": "tezos"
+              },
+              "Ripple": {
+                "value": "xrp"
+              },
+              "Stellar": {
+                "value": "stellar"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          },
+          {
+            "name": "block_id",
+            "in": "query",
+            "description": "Filter by block hash. You can specify only one block hash at a time.",
+            "schema": {
+              "type": "string"
+            },
+            "example": "0x2444165297806ad5598e4569e5823b3df0cde3e48b346781ab632fa6cef1a0ec"
+          },
+          {
+            "$ref": "#/components/parameters/assets"
+          },
+          {
+            "$ref": "#/components/parameters/order"
+          },
+          {
+            "$ref": "#/components/parameters/continuation"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Transactions",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/tx_page"
+                }
+              }
+            },
+            "links": {
+              "Continuation": {
+                "operationId": "GetTxs",
+                "parameters": {
+                  "continuation": "$response.body#/continuation"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "403": {
+            "description": "Invalid continuation",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "example": {
+                  "type": "forbidden",
+                  "code": 16389,
+                  "title": "Invalid Continuation",
+                  "status": 403,
+                  "detail": "The used continuation token is invalid."
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/tx/send": {
+      "post": {
+        "summary": "Submit a signed transaction",
+        "description": "Submit a signed transaction to the network.\n\n**Note**: A successful transaction may still be rejected on chain or not processed due to a too low fee.\nYou can monitor successful transactions through Ubiquity websockets.\n",
+        "operationId": "TxSend",
+        "tags": [
+          "Transactions"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "protocol",
+            "required": true,
+            "description": "Protocol handle",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Algorand": {
+                "value": "algorand"
+              },
+              "Bitcoin": {
+                "value": "bitcoin"
+              },
+              "Bitcoincash": {
+                "value": "bitcoincash"
+              },
+              "Dogecoin": {
+                "value": "dogecoin"
+              },
+              "Ethereum": {
+                "value": "ethereum"
+              },
+              "Litecoin": {
+                "value": "litecoin"
+              },
+              "Polkadot": {
+                "value": "polkadot"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/signed_tx"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "A submitted Transaction ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/tx_receipt"
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/block/{block_identifier}": {
+      "get": {
+        "summary": "Block By Number or Hash",
+        "description": "Get a block and all its transactions by the block number or hash",
+        "operationId": "GetBlock",
+        "tags": [
+          "Blocks"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/protocol"
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          },
+          {
+            "$ref": "#/components/parameters/block_identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Block",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/block"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Block Identifier",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "example": {
+                  "type": "bad-request",
+                  "code": 16386,
+                  "title": "Invalid Block Identifier",
+                  "status": 400,
+                  "detail": "The requested block number is not a valid identifier"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/block_identifier/{block_identifier}": {
+      "get": {
+        "summary": "Block Identifier By Hash",
+        "description": "Get minimal block identifier by block hash",
+        "operationId": "GetBlockIdentifier",
+        "tags": [
+          "Block Identifiers"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "protocol",
+            "required": true,
+            "description": "Protocol handle",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Bitcoin": {
+                "value": "bitcoin"
+              },
+              "Bitcoincash": {
+                "value": "bitcoincash"
+              },
+              "Dogecoin": {
+                "value": "dogecoin"
+              },
+              "Ethereum": {
+                "value": "ethereum"
+              },
+              "Litecoin": {
+                "value": "litecoin"
+              },
+              "Near": {
+                "value": "near"
+              },
+              "Polkadot": {
+                "value": "polkadot"
+              },
+              "Ripple": {
+                "value": "xrp"
+              },
+              "Tezos": {
+                "value": "tezos"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          },
+          {
+            "$ref": "#/components/parameters/block_identifier"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Block",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/block_identifier"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid Block hash",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                },
+                "example": {
+                  "type": "bad-request",
+                  "code": 16386,
+                  "title": "Invalid Block hash",
+                  "status": 400,
+                  "detail": "The requested block hash is not a valid hash"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/block_identifiers": {
+      "get": {
+        "summary": "Block Identifiers",
+        "description": "Get minimal block identifiers",
+        "operationId": "GetBlockIdentifiers",
+        "tags": [
+          "Block Identifiers"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "protocol",
+            "required": true,
+            "description": "Protocol handle",
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "Bitcoin": {
+                "value": "bitcoin"
+              },
+              "Bitcoin Cash": {
+                "value": "bitcoincash"
+              },
+              "Dogecoin": {
+                "value": "dogecoin"
+              },
+              "Ethereum": {
+                "value": "ethereum"
+              },
+              "Litecoin": {
+                "value": "litecoin"
+              },
+              "Polkadot": {
+                "value": "polkadot"
+              },
+              "Tezos": {
+                "value": "tezos"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          },
+          {
+            "$ref": "#/components/parameters/order"
+          },
+          {
+            "$ref": "#/components/parameters/continuation"
+          },
+          {
+            "$ref": "#/components/parameters/limit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Block headers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/block_identifiers"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/sync/block_number": {
+      "get": {
+        "summary": "Get current block number",
+        "operationId": "CurrentBlockNumber",
+        "tags": [
+          "Sync"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/protocol"
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current block number",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "format": "int64",
+                  "type": "integer"
+                },
+                "example": 32656659
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/sync/block_id": {
+      "get": {
+        "summary": "Get current block ID",
+        "operationId": "CurrentBlockID",
+        "tags": [
+          "Sync"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/protocol"
+          },
+          {
+            "$ref": "#/components/parameters/network"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current block ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": "3ea7cfb439e0baa4d91525b66b1f7b4e79ac0302a054a83d12f4e2ee7c933c8f"
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/UnauthorizedError"
+          },
+          "429": {
+            "$ref": "#/components/responses/TooManyRequests"
+          },
+          "500": {
+            "$ref": "#/components/responses/ServerError"
+          },
+          "503": {
+            "$ref": "#/components/responses/ServiceUnavailable"
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/asset/{id}": {
+      "get": {
+        "tags": [
+          "NFT"
+        ],
+        "summary": "Get NFT Asset",
+        "description": "Returns detailed information about an NFT asset by a given unique asset ID or\n by a given contract address and token ID.",
+        "operationId": "Get NFT Asset",
+        "parameters": [
+          {
+            "name": "protocol",
+            "in": "path",
+            "description": "Protocol handle, example: ethereum",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "network",
+            "in": "path",
+            "description": "Which network to target, example: mainnet",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Gets the Asset with matching `id`",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contract_address",
+            "in": "query",
+            "description": "Used in conjunction with `token_id` to get an Asset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token_id",
+            "in": "query",
+            "description": "Used in conjunction with `contract_address` to get an Asset",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "show_wallets",
+            "in": "query",
+            "description": "Shows associated wallets when set to true",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAssetResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/assets": {
+      "get": {
+        "tags": [
+          "NFT"
+        ],
+        "summary": "List NFT Assets",
+        "description": "Returns NFT assets by a given collection, contract, or wallet.",
+        "operationId": "List NFT Assets",
+        "parameters": [
+          {
+            "name": "protocol",
+            "in": "path",
+            "description": "Protocol handle, example: ethereum",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "network",
+            "in": "path",
+            "description": "Which network to target, example: mainnet",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "wallet_address",
+            "in": "query",
+            "description": "Lists Assets by `wallet_address`",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contract_address",
+            "in": "query",
+            "description": "Lists Assets by `contract_address`",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token_id",
+            "in": "query",
+            "description": "Filters results by `token_id` requires `contract_address`",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "collection_name",
+            "in": "query",
+            "description": "Lists Assets by `collection_name`",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "description": "One of: name, token_id, mint_date",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "One of: asc, desc",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "Limit results number of results by `page_size` where maximum is 50",
+            "schema": {
+              "type": "integer",
+              "format": "uint32"
+            }
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "description": "Base64 encoded cursor used to retrieve next page of results",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "attributes",
+            "in": "query",
+            "description": "Filters results by attribute pairs in the format key:value",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "token_type",
+            "in": "query",
+            "description": "Filters by `token_type`, one of: ERC721, ERC1155, CRYPTOPUNKS or ERC20",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "show_wallets",
+            "in": "query",
+            "description": "Shows associated wallets when set to true",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "include_burned",
+            "in": "query",
+            "description": "Includes burned tokens",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListAssetsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/collection/{id}": {
+      "get": {
+        "tags": [
+          "NFT"
+        ],
+        "summary": "Get NFT Collection",
+        "description": "Returns detailed information about an NFT collection by a given unique collection ID or by a given contract address.",
+        "operationId": "Get NFT Collection",
+        "parameters": [
+          {
+            "name": "protocol",
+            "in": "path",
+            "description": "Protocol handle, example: ethereum",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "network",
+            "in": "path",
+            "description": "Which network to target, example: mainnet",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Gets the Collection with matching `id`",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contractAddress",
+            "in": "query",
+            "description": "Gets the Collection with matching `contract_address`",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCollectionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/collections": {
+      "get": {
+        "tags": [
+          "NFT"
+        ],
+        "summary": "List NFT Collections",
+        "description": "Returns a list of all NFT collections in the network, which can be filtered by a given\n collection name, contract address, or token type.",
+        "operationId": "List NFT Collections",
+        "parameters": [
+          {
+            "name": "protocol",
+            "in": "path",
+            "description": "Protocol handle, example: ethereum",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "network",
+            "in": "path",
+            "description": "Which network to target, example: mainnet",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contractAddress",
+            "in": "query",
+            "description": "Lists collections with matching `contract_address`, repeatable field",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "collectionName",
+            "in": "query",
+            "description": "Lists Collections matching provided `collection_name`, repeatable field",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "description": "Sort by one of: name",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "One of: asc, desc",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "Limit results number of results by `page_size` where maximum is 100",
+            "schema": {
+              "type": "integer",
+              "format": "uint32"
+            }
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "description": "Base64 encoded cursor used to retrieve next page of results",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token_type",
+            "in": "query",
+            "description": "Filters by `token_type`, one of: ERC721, ERC1155, CRYPTOPUNKS or ERC20, repeatable field",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "name": "verified",
+            "in": "query",
+            "description": "Only verified collections will be returned when set to true",
+            "schema": {
+              "type": "boolean"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListCollectionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/collections/search": {
+      "get": {
+        "tags": [
+          "NFT"
+        ],
+        "summary": "Search NFT Collections",
+        "description": "Returns NFT collections with names matching a given search string.\n The response includes top 50 most relevant results, sorted in descending order.",
+        "operationId": "Search NFT Collections",
+        "parameters": [
+          {
+            "name": "protocol",
+            "in": "path",
+            "description": "Protocol handle, example: ethereum",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "network",
+            "in": "path",
+            "description": "Which network to target, example: mainnet",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Free text search on collection name, returning closest matching results",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "verified",
+            "in": "query",
+            "description": "Mapped to URL query parameter 'verified'",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "Mapped to URL query parameter `page_size`",
+            "schema": {
+              "type": "integer",
+              "format": "uint32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SearchCollectionResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/event/{id}": {
+      "get": {
+        "tags": [
+          "NFT"
+        ],
+        "summary": "Get NFT Event",
+        "description": "Returns detailed information about an NFT event by a given event ID.",
+        "operationId": "Get NFT Event",
+        "parameters": [
+          {
+            "name": "protocol",
+            "in": "path",
+            "description": "Protocol handle, example: ethereum",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "network",
+            "in": "path",
+            "description": "Which network to target, example: mainnet",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Gets the Event with matching `id`",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetEventResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/events": {
+      "get": {
+        "tags": [
+          "NFT"
+        ],
+        "summary": "List NFT Events",
+        "description": "Returns NFT events by a given contract or wallet.",
+        "operationId": "List NFT Events",
+        "parameters": [
+          {
+            "name": "protocol",
+            "in": "path",
+            "description": "Protocol handle, example: ethereum",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "network",
+            "in": "path",
+            "description": "Which network to target, example: mainnet",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "contract_address",
+            "in": "query",
+            "description": "Lists Events by `contract_address`",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "wallet_address",
+            "in": "query",
+            "description": "Lists Events by `wallet_address`",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "token_id",
+            "in": "query",
+            "description": "Filters Events by `token_id`, requires `contract_address`",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "event_type",
+            "in": "query",
+            "description": "Filters Events by `event_type`, one of: mint, transfer, sale",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort_by",
+            "in": "query",
+            "description": "Sort by one of: timestamp",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "order",
+            "in": "query",
+            "description": "One of: asc, desc",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "description": "Limit results number of results by `page_size` where maximum is 100",
+            "schema": {
+              "type": "integer",
+              "format": "uint32"
+            }
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "description": "Base64 encoded cursor used to retrieve next page of results",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListEventResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/token/refresh": {
+      "post": {
+        "tags": [
+          "NFT"
+        ],
+        "summary": "Refresh NFT Token",
+        "description": "Refreshes the metadata of an NFT token by a given contract address and token ID",
+        "operationId": "Refresh NFT Token",
+        "parameters": [
+          {
+            "name": "protocol",
+            "in": "path",
+            "description": "Protocol handle, example: ethereum",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "network",
+            "in": "path",
+            "description": "Protocol network, example: mainnet",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RefreshTokenRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/{protocol}/{network}/media/{path}": {
+      "get": {
+        "tags": [
+          "NFT"
+        ],
+        "summary": "Retrieve NFT Media",
+        "description": "Returns media associated with an NFT asset or collection by a given media path. Supported media types include images, animations, and videos.",
+        "operationId": "Retrieve NFT Media",
+        "parameters": [
+          {
+            "name": "protocol",
+            "in": "path",
+            "description": "Protocol handle, example: ethereum",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "network",
+            "in": "path",
+            "description": "Protocol network, example: mainnet",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "path",
+            "in": "path",
+            "description": "Path of the media file",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Opaque",
+        "description": "`Authorization: Bearer <Token>` header must be set to authenticate API requests.\nYou can create tokens in the \"Configure\" tab of your API access area at https://app.blockdaemon.com.\n"
+      },
+      "apiKeyAuthHeader": {
+        "type": "apiKey",
+        "description": "`X-API-Key: <Token>` header must be set to authenticate API requests.\nYou can create tokens in the \"Configure\" tab of your API access area at https://app.blockdaemon.com.\n",
+        "in": "header",
+        "name": "X-API-Key"
+      },
+      "apiKeyAuth": {
+        "type": "apiKey",
+        "description": "A query param `?apiKey=<Token>` also can be used to authenticate API requests.\nYou can create tokens in the \"Configure\" tab of your API access area at https://app.blockdaemon.com.\n",
+        "name": "apiKey",
+        "in": "query"
+      }
+    },
+    "responses": {
+      "TooManyRequests": {
+        "description": "Rate limit exceeded",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "type": "too-many-requests",
+              "title": "Too Many Requests",
+              "status": 429,
+              "detail": "Request rate limits have been exceeded. Try again after a few seconds."
+            }
+          }
+        }
+      },
+      "BadRequest": {
+        "description": "Bad request",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found",
+        "content": {
+          "application/problem+json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "type": "not-found",
+              "code": 16388,
+              "title": "Not Found",
+              "status": 404,
+              "detail": "The requested resource has not been found"
+            }
+          }
+        }
+      },
+      "UnauthorizedError": {
+        "description": "Invalid or expired token",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "type": "unauthorized",
+              "title": "Invalid Token",
+              "status": 401
+            }
+          }
+        }
+      },
+      "ServerError": {
+        "description": "An internal server error happened",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "type": "internal-server-error",
+              "title": "Internal Server Error",
+              "status": 500
+            }
+          }
+        }
+      },
+      "ServiceUnavailable": {
+        "description": "The resource you are trying to access is currently unavailable.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/error"
+            },
+            "example": {
+              "type": "unavailable",
+              "title": "Unavailable",
+              "status": 503
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "block": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Block number",
+            "example": 8000000
+          },
+          "id": {
+            "type": "string",
+            "description": "Block hash",
+            "example": "0x123456070D674D44a7F9cb4Ab272bd88fAd004b5"
+          },
+          "parent_id": {
+            "type": "string",
+            "description": "Parent block hash",
+            "example": "0xfcf029ffd36a6714aae09dcc7acbdd8f2b96327f"
+          },
+          "date": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unix timestamp",
+            "example": 1571222657
+          },
+          "num_txs": {
+            "type": "integer",
+            "description": "Amount of transaction in the block",
+            "example": 10
+          },
+          "txs": {
+            "type": "array",
+            "description": "Partial list of normalized transactions (not filtered or unknown model)",
+            "items": {
+              "$ref": "#/components/schemas/tx"
+            }
+          }
+        }
+      },
+      "block_identifier": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Block number",
+            "example": 8000000
+          },
+          "id": {
+            "type": "string",
+            "description": "Block hash",
+            "example": "0x123456070D674D44a7F9cb4Ab272bd88fAd004b5"
+          },
+          "parent_id": {
+            "type": "string",
+            "description": "Parent block hash",
+            "example": "0xfcf029ffd36a6714aae09dcc7acbdd8f2b96327f"
+          },
+          "date": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unix timestamp",
+            "example": 1571222657
+          }
+        }
+      },
+      "tx_confirmation": {
+        "type": "object",
+        "properties": {
+          "current_height": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Current Block Number",
+            "example": 150123
+          },
+          "tx_id": {
+            "type": "string",
+            "description": "Transaction hash",
+            "example": "0x123456070D674D44a7F9cb4Ab272bd88fAd004b5"
+          },
+          "confirmations": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Total transaction confirmations",
+            "example": 10
+          }
+        }
+      },
+      "tx_page": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "Number of items in txs",
+            "example": 1
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/tx"
+            }
+          },
+          "continuation": {
+            "type": "object",
+            "description": "Token to get the next page",
+            "properties": {
+              "meta": {
+                "nullable": true,
+                "$ref": "#/components/schemas/Meta"
+              }
+            }
+          }
+        }
+      },
+      "accounts_balances": {
+        "type": "object",
+        "description": "Accounts balances with account addressses as keys",
+        "additionalProperties": {
+          "type": "array",
+          "items": {
+            "$ref": "#/components/schemas/balance"
+          }
+        }
+      },
+      "balances": {
+        "description": "Currency balances with asset paths as keys",
+        "type": "array",
+        "items": {
+          "$ref": "#/components/schemas/balance"
+        },
+        "example": [
+          {
+            "currency": {
+              "asset_path": "ethereum/native/eth",
+              "symbol": "ETH",
+              "name": "Ether",
+              "decimals": 18,
+              "type": "native"
+            },
+            "confirmed_balance": "99999",
+            "pending_balance": "999999",
+            "confirmed_nonce": 9999,
+            "confirmed_block": 99999999
+          }
+        ]
+      },
+      "balance": {
+        "description": "Currency balances with asset paths as keys",
+        "type": "object",
+        "properties": {
+          "currency": {
+            "$ref": "#/components/schemas/currency"
+          },
+          "confirmed_balance": {
+            "type": "string"
+          },
+          "pending_balance": {
+            "type": "string"
+          },
+          "confirmed_nonce": {
+            "type": "integer"
+          },
+          "confirmed_block": {
+            "type": "integer",
+            "example": 1313
+          }
+        },
+        "example": {
+          "currency": {
+            "asset_path": "ethereum/native/eth",
+            "symbol": "ETH",
+            "name": "Ether",
+            "decimals": 18,
+            "type": "native"
+          },
+          "confirmed_balance": "99999",
+          "pending_balance": "999999",
+          "confirmed_nonce": 9999,
+          "confirmed_block": 99999999
+        }
+      },
+      "event": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "integer",
+            "nullable": true,
+            "format": "bigint",
+            "example": 5000000000
+          },
+          "block_id": {
+            "type": "string"
+          },
+          "block_number": {
+            "type": "integer"
+          },
+          "date": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "decimals": {
+            "type": "integer",
+            "nullable": true
+          },
+          "denomination": {
+            "type": "string",
+            "nullable": true
+          },
+          "destination": {
+            "type": "string",
+            "nullable": true,
+            "example": "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
+          },
+          "id": {
+            "type": "string"
+          },
+          "source": {
+            "type": "string",
+            "nullable": true
+          },
+          "transaction_id": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "tx": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique transaction identifier",
+            "example": "0xF00Fa860473130C1df10707223E66Cb4B839B165"
+          },
+          "date": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unix timestamp",
+            "example": 1571222657
+          },
+          "block_id": {
+            "type": "string",
+            "description": "ID of block if mined, otherwise omitted.",
+            "example": "0xaf2948aba2ed8cc7d5b7d4e4f4164a7c8819efc94d30aab3fce6904df68dbc07",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "description": "Result status of the transaction.",
+            "enum": [
+              "completed",
+              "failed"
+            ]
+          },
+          "assets": {
+            "type": "array",
+            "description": "List of moved assets by asset path",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "example": "ethereum/native/eth"
+            },
+            "nullable": true
+          },
+          "nonce": {
+            "type": "integer"
+          },
+          "num_events": {
+            "type": "integer"
+          },
+          "events": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/event"
+            },
+            "nullable": true
+          }
+        }
+      },
+      "tx_minify": {
+        "type": "object",
+        "nullable": true,
+        "description": "Transaction",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique transaction identifier",
+            "example": "0xF00Fa860473130C1df10707223E66Cb4B839B165"
+          },
+          "date": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Unix timestamp",
+            "example": 1571222657
+          },
+          "block_id": {
+            "type": "string",
+            "description": "ID of block.",
+            "example": "0xaf2948aba2ed8cc7d5b7d4e4f4164a7c8819efc94d30aab3fce6904df68dbc07",
+            "nullable": true
+          },
+          "block_number": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Height of block,",
+            "example": 77477,
+            "nullable": true
+          },
+          "confirmations": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Total transaction confirmations",
+            "example": 10
+          }
+        }
+      },
+      "tx_output": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "description": "Result status of the transaction output.",
+            "enum": [
+              "mined",
+              "unknown"
+            ]
+          },
+          "is_spent": {
+            "type": "boolean",
+            "description": "If the transaction output was spent or not, if the value is true the `spent` transaction object will be presented",
+            "example": true
+          },
+          "value": {
+            "type": "integer",
+            "format": "int64",
+            "description": "Amount of transaction output",
+            "nullable": true
+          },
+          "mined": {
+            "$ref": "#/components/schemas/tx_minify"
+          },
+          "spent": {
+            "$ref": "#/components/schemas/tx_minify"
+          }
+        }
+      },
+      "accounts_obj": {
+        "type": "object",
+        "properties": {
+          "addresses": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "currency": {
+        "type": "object",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/native_currency"
+          },
+          {
+            "$ref": "#/components/schemas/token_currency"
+          },
+          {
+            "$ref": "#/components/schemas/smart_token_currency"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "type",
+          "mapping": {
+            "native": "#/components/schemas/native_currency",
+            "token": "#/components/schemas/token_currency",
+            "smart_token": "#/components/schemas/smart_token_currency"
+          }
+        }
+      },
+      "native_currency": {
+        "type": "object",
+        "properties": {
+          "asset_path": {
+            "type": "string",
+            "description": "Asset path of transferred currency",
+            "example": "ethereum/native/eth"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Currency symbol",
+            "example": "ETH"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of currency",
+            "example": "Ether"
+          },
+          "decimals": {
+            "type": "integer",
+            "description": "Decimal places right to the comma",
+            "example": 18
+          },
+          "type": {
+            "type": "string",
+            "default": "native"
+          }
+        },
+        "required": [
+          "asset_path",
+          "type"
+        ]
+      },
+      "token_currency": {
+        "type": "object",
+        "properties": {
+          "asset_path": {
+            "type": "string",
+            "description": "Asset path of transferred currency",
+            "example": "ethereum/native/eth"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Currency symbol",
+            "example": "ETH"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of currency",
+            "example": "Ether"
+          },
+          "decimals": {
+            "type": "integer",
+            "description": "Decimal places right to the comma",
+            "example": 18
+          },
+          "type": {
+            "type": "string",
+            "default": "token"
+          },
+          "detail": {
+            "$ref": "#/components/schemas/token"
+          }
+        },
+        "required": [
+          "asset_path",
+          "type"
+        ]
+      },
+      "smart_token_currency": {
+        "type": "object",
+        "properties": {
+          "asset_path": {
+            "type": "string",
+            "description": "Asset path of transferred currency",
+            "example": "ethereum/native/eth"
+          },
+          "symbol": {
+            "type": "string",
+            "description": "Currency symbol",
+            "example": "ETH"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of currency",
+            "example": "Ether"
+          },
+          "decimals": {
+            "type": "integer",
+            "description": "Decimal places right to the comma",
+            "example": 18
+          },
+          "type": {
+            "type": "string",
+            "default": "smart_token"
+          },
+          "detail": {
+            "$ref": "#/components/schemas/smart_token"
+          }
+        },
+        "required": [
+          "asset_path",
+          "type"
+        ]
+      },
+      "token": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Name of token mechanism",
+            "example": "credit_alphanum4"
+          },
+          "id": {
+            "type": "string",
+            "description": "Token identifier",
+            "example": "USD"
+          },
+          "creator": {
+            "type": "string",
+            "description": "Address that created token",
+            "example": "GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX"
+          }
+        },
+        "required": [
+          "type",
+          "id"
+        ]
+      },
+      "smart_token": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "Name of token mechanism (smart contract)",
+            "example": "ERC-20"
+          },
+          "contract": {
+            "type": "string",
+            "description": "Address of contract",
+            "example": "0xF00Fa860473130C1df10707223E66Cb4B839B165"
+          }
+        },
+        "required": [
+          "type",
+          "contract"
+        ]
+      },
+      "protocol_detail": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "description": "Backend API Type",
+            "example": "BlockScout RPC"
+          },
+          "handle": {
+            "type": "string",
+            "example": "bitcoin"
+          },
+          "genesis_number": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "endpoints": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "protocols_overview": {
+        "type": "object",
+        "properties": {
+          "protocols": {
+            "type": "array",
+            "description": "List of items each describing a pair of supported protocol and network.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "handle": {
+                  "type": "string",
+                  "example": "bitcoin"
+                },
+                "network": {
+                  "type": "string",
+                  "example": "mainnet"
+                }
+              }
+            }
+          }
+        }
+      },
+      "fee_estimate": {
+        "type": "object",
+        "properties": {
+          "most_recent_block": {
+            "type": "integer",
+            "description": "Most recent block"
+          },
+          "estimated_fees": {
+            "type": "object",
+            "description": "Object containing fast, medium, slow fees",
+            "properties": {
+              "fast": {
+                "type": "integer"
+              },
+              "medium": {
+                "type": "integer"
+              },
+              "slow": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "signed_tx": {
+        "type": "object",
+        "properties": {
+          "tx": {
+            "type": "string",
+            "description": "The signed TX",
+            "example": "0100000001ca19af5fb94ced7e62b623d0039a398a42e60050405a1341efe475894629c131010000008b483045022100d77b002b3142013b3f825a730f5bc3ead2014266f07ba4449269af0cf6f086310220365bca1d616ba86fac42ad69efd5f92c5ed6cf16f27ebf5ab55010efc72c219d014104417eb0abe69db2eca63c84eb44266c29c24973dc81cde16ca86c9d923630cb5f797bae7d7fab13498e06146111356eb271da74add05ebda8f72ff2b2878fddb7ffffffff0410270000000000001976a914344a0f48ca150ec2b903817660b9b68b13a6702688ac204e0000000000001976a914344a0f48ca150ec2b903817660b9b68b13a6702688ac30750000000000001976a914344a0f48ca150ec2b903817660b9b68b13a6702688ac48710000000000001976a914d6fa8814924b480fa7ff903b5ef61100ab4d92fe88ac00000000"
+          }
+        },
+        "required": [
+          "tx"
+        ]
+      },
+      "tx_receipt": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The transaction ID",
+            "example": "9c8ac345b443dd10a418ea0beaa320ef233dbae5590be2a11ac090e0e9839c1c"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "error": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "description": "HTTP error type",
+            "example": "bad-request"
+          },
+          "code": {
+            "type": "integer",
+            "description": "Numeric error code",
+            "example": 16384
+          },
+          "title": {
+            "type": "string",
+            "description": "Short error description",
+            "example": "Invalid Address"
+          },
+          "status": {
+            "type": "integer",
+            "description": "HTTP status of the error",
+            "example": 400
+          },
+          "detail": {
+            "type": "string",
+            "description": "Long error description",
+            "example": "The requested address is invalid on this protocol"
+          }
+        }
+      },
+      "report": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "array",
+            "description": "Transaction items",
+            "items": {
+              "$ref": "#/components/schemas/report_field"
+            }
+          },
+          "items": {
+            "type": "integer",
+            "description": "The number of transactions in the report",
+            "example": 1
+          },
+          "limit": {
+            "type": "integer",
+            "description": "The limit number provided in the request or the default",
+            "example": 100
+          },
+          "continuation": {
+            "type": "string",
+            "description": "Continuation token to send in the next request if there are more items",
+            "example": "xyz"
+          }
+        },
+        "required": [
+          "fields",
+          "items"
+        ]
+      },
+      "report_field": {
+        "type": "object",
+        "properties": {
+          "protocol": {
+            "type": "string",
+            "description": "The protocol the address relates to",
+            "example": "Algorand"
+          },
+          "address": {
+            "type": "string",
+            "description": "The wallet/account the transaction occurred",
+            "example": "GXL2EQ6JV54MTMP2IXOTF5CJLS7GAWMRDZMOY7JZAPO72AQRDDYGD6OX3E"
+          },
+          "currency": {
+            "type": "string",
+            "description": "The currency symbol",
+            "example": "ALGO"
+          },
+          "event_id": {
+            "type": "string",
+            "description": "The ID of the event within a transaction",
+            "example": "RNEYUT3MRYGT5ENSLIC7LGJCJMW6BXNS6SAW7A25DTYRW4TFJ5JA"
+          },
+          "block": {
+            "type": "integer",
+            "format": "int64",
+            "description": "The block number the transaction occurred on",
+            "example": 8986217
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The unix timestamp when the transaction was added to a block",
+            "example": 1599745403
+          },
+          "hash": {
+            "type": "string",
+            "description": "The transaction ID",
+            "example": "RNEYUT3MRYGT5ENSLIC7LGJCJMW6BXNS6SAW7A25DTYRW4TFJ5JA"
+          },
+          "action": {
+            "type": "string",
+            "description": "The action type e.g. Transfer, Deposit, Staking Reward etc..",
+            "example": "pay"
+          },
+          "value": {
+            "type": "string",
+            "description": "The amount of currency involved in the transaction (smallest unit)",
+            "example": "1000000"
+          },
+          "sender_address": {
+            "type": "string",
+            "description": "The address where the funds originated",
+            "example": "T3BYUTYZCWV7UVK7IFYPC2UKH5VNBGVP4PUKSUBF5F6GQ244Y4I2XUWCQM"
+          },
+          "fee": {
+            "type": "string",
+            "description": "How much was charged as a fee for processing the transaction",
+            "example": "1000"
+          },
+          "decimals": {
+            "type": "integer",
+            "format": "int32",
+            "description": "The number of decimals in one coin, used to convert smallest unit to 1 whole coin if needed",
+            "example": 6
+          }
+        },
+        "required": [
+          "action",
+          "address",
+          "block",
+          "currency",
+          "decimals",
+          "event_id",
+          "fee",
+          "hash",
+          "protocol",
+          "sender_address",
+          "timestamp",
+          "value"
+        ]
+      },
+      "algorand_meta": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "default": "algorand_meta"
+          },
+          "sender_reward": {
+            "type": "string",
+            "example": "121176"
+          },
+          "recipient_reward": {
+            "type": "string",
+            "example": "0"
+          },
+          "close": {
+            "type": "string",
+            "example": "XIU7HGGAJ3QOTATPDSIIHPFVKMICXKHMOR2FJKHTVLII4FAOA3CYZQDLG4"
+          },
+          "close_amount": {
+            "type": "string",
+            "example": "0"
+          },
+          "close_reward": {
+            "type": "string",
+            "example": "0"
+          }
+        }
+      },
+      "Collection": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "logo": {
+            "type": "string"
+          },
+          "contracts": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "verified": {
+            "type": "boolean"
+          }
+        }
+      },
+      "Contract": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "symbol": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "image_url": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      },
+      "NFTEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "contract_address": {
+            "type": "string"
+          },
+          "token_id": {
+            "type": "string"
+          },
+          "event_type": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "from_account": {
+            "type": "string"
+          },
+          "to_account": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "GetAssetResponse": {
+        "type": "object",
+        "properties": {
+          "asset": {
+            "$ref": "#/components/schemas/GetAssetResponse_Asset"
+          }
+        }
+      },
+      "GetAssetResponse_Asset": {
+        "type": "object",
+        "properties": {
+          "token_id": {
+            "type": "string"
+          },
+          "token_type": {
+            "type": "string"
+          },
+          "media": {
+            "$ref": "#/components/schemas/GetAssetResponse_AssetMedia"
+          },
+          "name": {
+            "type": "string"
+          },
+          "mint_date": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "token_uri": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "contract_address": {
+            "type": "string"
+          },
+          "wallets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetAssetResponse_AssetWallet"
+            }
+          },
+          "attributes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetAssetResponse_AssetTrait"
+            }
+          }
+        }
+      },
+      "GetAssetResponse_AssetMedia": {
+        "type": "object",
+        "properties": {
+          "image_url": {
+            "type": "string"
+          }
+        }
+      },
+      "GetAssetResponse_AssetTrait": {
+        "type": "object",
+        "properties": {
+          "trait_type": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "GetAssetResponse_AssetWallet": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string"
+          }
+        }
+      },
+      "GetCollectionResponse": {
+        "type": "object",
+        "properties": {
+          "collection": {
+            "$ref": "#/components/schemas/GetCollectionResponse_Collection"
+          }
+        }
+      },
+      "GetCollectionResponse_Collection": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "logo": {
+            "type": "string"
+          },
+          "banner": {
+            "type": "string"
+          },
+          "verified": {
+            "type": "boolean"
+          },
+          "contracts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Contract"
+            }
+          },
+          "meta": {
+            "type": "object"
+          }
+        }
+      },
+      "GetEvent": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "contract_address": {
+            "type": "string"
+          },
+          "token_id": {
+            "type": "string"
+          },
+          "event_type": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "quantity": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "transaction": {
+            "type": "object"
+          },
+          "payments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Payment"
+            }
+          }
+        }
+      },
+      "GetEventResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/GetEvent"
+          }
+        }
+      },
+      "ListAssetsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListAssetsResponse_Asset"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "ListAssetsResponse_Asset": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "token_id": {
+            "type": "string"
+          },
+          "image_url": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "contract_address": {
+            "type": "string"
+          },
+          "wallets": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ListCollectionResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Collection"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "ListEventResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NFTEvent"
+            }
+          },
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
+          }
+        }
+      },
+      "Meta": {
+        "type": "object",
+        "properties": {
+          "paging": {
+            "$ref": "#/components/schemas/Paging"
+          }
+        }
+      },
+      "Paging": {
+        "type": "object",
+        "properties": {
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "Payment": {
+        "type": "object",
+        "properties": {
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "currency": {
+            "type": "string"
+          }
+        }
+      },
+      "SearchCollectionResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Collection"
+            }
+          }
+        }
+      },
+      "RefreshTokenRequest": {
+        "type": "object",
+        "properties": {
+          "contract_address": {
+            "type": "string",
+            "description": "Mapped to body `contract_addresses`"
+          },
+          "token_id": {
+            "type": "string",
+            "description": "Mapped to body `token_id`"
+          }
+        }
+      },
+      "RefreshTokenResponse": {
+        "type": "object",
+        "properties": {
+          "contract_address": {
+            "type": "string"
+          },
+          "token_id": {
+            "type": "string"
+          }
+        }
+      },
+      "tx_outputs": {
+        "type": "object",
+        "description": "List of transaction outputs",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "Number of items in block identifiers",
+            "example": 25
+          },
+          "continuation": {
+            "type": "object",
+            "description": "Token to get the next page",
+            "properties": {
+              "meta": {
+                "nullable": true,
+                "$ref": "#/components/schemas/Meta"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "description": "the status of the given transaction output",
+                  "example": "mined"
+                },
+                "is_spent": {
+                  "type": "boolean",
+                  "description": "whether the transaction output was spent or not",
+                  "example": false
+                },
+                "spent": {
+                  "nullable": false,
+                  "$ref": "#/components/schemas/tx-output-response"
+                },
+                "value": {
+                  "type": "integer",
+                  "format": "int64",
+                  "description": "the amount of tokens within the given output",
+                  "example": 600
+                },
+                "mined": {
+                  "nullable": true,
+                  "$ref": "#/components/schemas/tx-output-response"
+                }
+              }
+            }
+          }
+        }
+      },
+      "tx-output-response": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer",
+            "description": "the output index within a given transaction",
+            "example": 1
+          },
+          "tx_id": {
+            "type": "string",
+            "description": "the transaction identifier",
+            "example": "57f7dc46786c5d56d260186d459f1246943dd6e83ca00235909dad1b826f20b4"
+          },
+          "date": {
+            "type": "integer",
+            "description": "the transaction creation unix timestamp",
+            "example": 1655419925
+          },
+          "block_id": {
+            "type": "string",
+            "description": "the identifier of the block which the transaction was mined",
+            "example": "00000000000000000008ad1bdca4288143a0cb20e71de0808a066db89857e153"
+          },
+          "block_number": {
+            "type": "integer",
+            "description": "the number of the block which the transaction was mined",
+            "example": 741100
+          },
+          "confirmations": {
+            "type": "integer",
+            "description": "the number of confirmations the transaction took in order to be mined",
+            "example": 1619
+          }
+        }
+      },
+      "block_identifiers": {
+        "type": "object",
+        "properties": {
+          "total": {
+            "type": "integer",
+            "description": "Number of items in block identifiers",
+            "example": 25
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/block_identifier"
+            },
+            "example": {
+              "total": 2,
+              "data": [
+                {
+                  "number": 1,
+                  "id": "80ca095ed10b02e53d769eb6eaf92cd04e9e0759e5be4a8477b42911ba49c78f",
+                  "parent_id": "12a765e31ffd4059bada1e25190f6e98c99d9714d334efa41a195a7e7e04bfe2",
+                  "date": 1318055359,
+                  "num_txs": 1
+                },
+                {
+                  "number": 2,
+                  "id": "13957807cdd1d02f993909fa59510e318763f99a506c4c426e3b254af09f40d7",
+                  "parent_id": "80ca095ed10b02e53d769eb6eaf92cd04e9e0759e5be4a8477b42911ba49c78f",
+                  "date": 1318386858,
+                  "num_txs": 1
+                }
+              ],
+              "meta": {
+                "paging": {
+                  "next_page_token": "Mg==="
+                }
+              }
+            }
+          },
+          "continuation": {
+            "type": "object",
+            "description": "Token to get the next page",
+            "properties": {
+              "meta": {
+                "nullable": true,
+                "$ref": "#/components/schemas/Meta"
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "protocol": {
+        "in": "path",
+        "name": "protocol",
+        "required": true,
+        "description": "Protocol handle",
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "Algorand": {
+            "value": "algorand"
+          },
+          "Bitcoin": {
+            "value": "bitcoin"
+          },
+          "Bitcoincash": {
+            "value": "bitcoincash"
+          },
+          "Dogecoin": {
+            "value": "dogecoin"
+          },
+          "Ethereum": {
+            "value": "ethereum"
+          },
+          "Litecoin": {
+            "value": "litecoin"
+          },
+          "Near": {
+            "value": "near"
+          },
+          "Oasis": {
+            "value": "oasis"
+          },
+          "Polkadot": {
+            "value": "polkadot"
+          },
+          "Ripple": {
+            "value": "xrp"
+          },
+          "Solana": {
+            "value": "solana"
+          },
+          "Stellar": {
+            "value": "stellar"
+          },
+          "Tezos": {
+            "value": "tezos"
+          }
+        }
+      },
+      "network": {
+        "name": "network",
+        "in": "path",
+        "required": true,
+        "description": "Which network to target. Available networks can be found with /{protocol}",
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "Mainnet": {
+            "value": "mainnet"
+          },
+          "Testnet": {
+            "value": "testnet"
+          }
+        }
+      },
+      "address": {
+        "name": "address",
+        "in": "path",
+        "required": true,
+        "description": "Account address",
+        "schema": {
+          "type": "string"
+        },
+        "example": "0x2E31B312290A01538514806Fbb857736ea4d5555"
+      },
+      "order": {
+        "name": "order",
+        "in": "query",
+        "description": "Pagination order",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "desc",
+            "asc"
+          ]
+        }
+      },
+      "continuation": {
+        "name": "continuation",
+        "in": "query",
+        "required": false,
+        "description": "Continuation token from earlier response",
+        "schema": {
+          "type": "string"
+        },
+        "example": "8185.123"
+      },
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "required": false,
+        "description": "Max number of items to return in a response.\nDefaults to 25 and is capped at 100.\n",
+        "schema": {
+          "type": "integer"
+        },
+        "example": 25
+      },
+      "key": {
+        "name": "key",
+        "in": "path",
+        "required": true,
+        "description": "Block number or block hash/ID or Special identifier",
+        "schema": {
+          "type": "string",
+          "description": "Block number or block hash/ID or Special identifier"
+        },
+        "examples": {
+          "Block number": {
+            "value": 8000000,
+            "summary": "Block number"
+          },
+          "Block hash/ID": {
+            "value": "0x4e454b49dc8a2e2a229e0ce911e9fd4d2aa647de4cf6e0df40cf71bff7283330",
+            "summary": "Block hash or Block ID"
+          },
+          "Special identifier": {
+            "value": "current",
+            "summary": "Special identifier for the current block"
+          }
+        }
+      },
+      "assets": {
+        "name": "assets",
+        "in": "query",
+        "required": false,
+        "description": "Comma-separated list of asset paths to filter. If the list is empty, or all elements are empty, this filter has no effect.",
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "ETH native currency": {
+            "value": "ethereum/native/eth"
+          },
+          "ETH smart token": {
+            "value": "ethereum/contract/0x0f5d2fb29fb7d3cfee444a200298f468908cc942/erc-20"
+          },
+          "More than one asset": {
+            "value": "ethereum/native/eth,ethereum/contract/0x0f5d2fb29fb7d3cfee444a200298f468908cc942/erc-20"
+          }
+        }
+      },
+      "tx-hash": {
+        "name": "id",
+        "in": "path",
+        "required": true,
+        "description": "Transaction ID/Hash",
+        "schema": {
+          "type": "string"
+        },
+        "example": "0xF00Fa860473130C1df10707223E66Cb4B839B165"
+      },
+      "block_identifier": {
+        "name": "block_identifier",
+        "in": "path",
+        "required": true,
+        "description": "Block ID or number",
+        "schema": {
+          "type": "string"
+        },
+        "example": "0xF00Fa860473130C1df10707223E66Cb4B839B165"
+      }
+    }
+  }
+}

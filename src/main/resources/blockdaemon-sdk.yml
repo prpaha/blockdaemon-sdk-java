@@ -1,0 +1,4 @@
+blockdaemon:
+  network: 'mainnet'
+  apiKey: '${BLOCKDAEMON_API_KEY}'
+  debugging: true
