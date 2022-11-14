@@ -15,7 +15,7 @@ gradle publishToMavenLocal
 ```
 Add dependency to your project, for example in gradle: 
 ```yaml
-implementation "ru.prpaha.blockdaemon:blockdaemon-sdk-java:0.0.1"
+implementation "ru.prpaha:blockdaemon-sdk-java:0.0.1"
 ```
 
 ### Library Settings:
