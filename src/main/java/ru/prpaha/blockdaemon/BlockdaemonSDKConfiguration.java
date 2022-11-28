@@ -9,10 +9,12 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import ru.prpaha.blockdaemon.api.AccountsApi;
+import ru.prpaha.blockdaemon.api.SyncApi;
 import ru.prpaha.blockdaemon.api.TransactionsApi;
 import ru.prpaha.blockdaemon.invoker.ApiClient;
 import ru.prpaha.blockdaemon.invoker.auth.HttpBearerAuth;
 import ru.prpaha.blockdaemon.repository.AccountsRepository;
+import ru.prpaha.blockdaemon.repository.PlatformsRepository;
 import ru.prpaha.blockdaemon.repository.TransactionsRepository;
 
 import java.text.SimpleDateFormat;
@@ -54,6 +56,16 @@ public class BlockdaemonSDKConfiguration {
     @Bean
     public TransactionsRepository transactionsRepository(TransactionsApi transactionsApi, Gson gson) {
         return new TransactionsRepository(transactionsApi, gson);
+    }
+
+    @Bean
+    public SyncApi syncApi() {
+        return new SyncApi(createApiClient());
+    }
+
+    @Bean
+    public PlatformsRepository platformsRepository(SyncApi syncApi, Gson gson) {
+        return new PlatformsRepository(syncApi, gson);
     }
 
     private ApiClient createApiClient() {

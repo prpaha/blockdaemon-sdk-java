@@ -40,7 +40,7 @@ repositories {
 }
 
 ext {
-    libVersion = '0.0.2'
+    libVersion = '0.0.3'
 }
 
 version = "${libVersion}"
@@ -119,9 +119,9 @@ dependencies {
     implementation 'io.gsonfire:gson-fire:1.8.5'
     fatJar 'io.gsonfire:gson-fire:1.8.5'
 
-    compileOnly 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.0'
 }
