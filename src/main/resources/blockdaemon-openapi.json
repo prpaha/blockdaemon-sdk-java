@@ -3089,13 +3089,16 @@
             "description": "Object containing fast, medium, slow fees",
             "properties": {
               "fast": {
-                "type": "integer"
+                "type": "integer",
+                "format": "int64"
               },
               "medium": {
-                "type": "integer"
+                "type": "integer",
+                "format": "int64"
               },
               "slow": {
-                "type": "integer"
+                "type": "integer",
+                "format": "int64"
               }
             }
           }
