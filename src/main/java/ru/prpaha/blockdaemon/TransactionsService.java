@@ -24,7 +24,7 @@ public class TransactionsService {
     @Value("${blockdaemon.network}")
     private String network;
 
-    public TxOutputs getBitcoinTransactions(BlockdaemonPlatform platform, String address, String continuation) throws ApiException {
+    public TxOutputs getTransactions(BlockdaemonPlatform platform, String address, String continuation) throws ApiException {
         return accountsRepository.getTransactions(platform.getValue(), network, address, continuation);
     }
 
