@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import ru.prpaha.blockdaemon.api.AccountsApi;
 import ru.prpaha.blockdaemon.invoker.ApiException;
 import ru.prpaha.blockdaemon.model.TxOutputs;
+import ru.prpaha.blockdaemon.model.TxPage;
 
 public class AccountsRepository extends AbstractApiRepository {
 
@@ -14,9 +15,15 @@ public class AccountsRepository extends AbstractApiRepository {
         this.accountsApi = accountsApi;
     }
 
-    public TxOutputs getTransactions(String platform, String network, String address, String continuation)
+    public TxOutputs getTransactionsUtxo(String platform, String network, String address, String continuation)
             throws ApiException {
         return accountsApi.getUTXOByAccount(platform, network, address,
+                null, null, null, "asc", continuation, null);
+    }
+
+    public TxPage getTransactionsTxs(String platform, String network, String address, String continuation)
+            throws ApiException {
+        return accountsApi.getTxsByAddress(platform, network, address,
                 null, null, null, "asc", continuation, null);
     }
 

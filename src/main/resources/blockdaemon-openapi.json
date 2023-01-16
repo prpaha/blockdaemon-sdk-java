@@ -898,7 +898,7 @@
               "Continuation": {
                 "operationId": "GetTxsByAddress",
                 "parameters": {
-                  "continuation": "$response.body#/Meta"
+                  "meta": "$response.body#/Meta"
                 }
               }
             }
@@ -2598,21 +2598,14 @@
             "description": "Number of items in txs",
             "example": 1
           },
-          "items": {
+          "data": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/tx"
             }
           },
-          "continuation": {
-            "type": "object",
-            "description": "Token to get the next page",
-            "properties": {
-              "meta": {
-                "nullable": true,
-                "$ref": "#/components/schemas/Meta"
-              }
-            }
+          "meta": {
+            "$ref": "#/components/schemas/Meta"
           }
         }
       },
@@ -2689,7 +2682,7 @@
           "amount": {
             "type": "integer",
             "nullable": true,
-            "format": "bigint",
+            "format": "int64",
             "example": 5000000000
           },
           "block_id": {

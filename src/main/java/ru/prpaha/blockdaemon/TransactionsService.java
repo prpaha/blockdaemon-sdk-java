@@ -9,6 +9,7 @@ import ru.prpaha.blockdaemon.invoker.ApiException;
 import ru.prpaha.blockdaemon.model.FeeEstimate;
 import ru.prpaha.blockdaemon.model.FeeEstimateEstimatedFees;
 import ru.prpaha.blockdaemon.model.TxOutputs;
+import ru.prpaha.blockdaemon.model.TxPage;
 import ru.prpaha.blockdaemon.repository.AccountsRepository;
 import ru.prpaha.blockdaemon.repository.PlatformsRepository;
 import ru.prpaha.blockdaemon.repository.TransactionsRepository;
@@ -25,7 +26,11 @@ public class TransactionsService {
     private String network;
 
     public TxOutputs getTransactions(BlockdaemonPlatform platform, String address, String continuation) throws ApiException {
-        return accountsRepository.getTransactions(platform.getValue(), network, address, continuation);
+        return accountsRepository.getTransactionsUtxo(platform.getValue(), network, address, continuation);
+    }
+
+    public TxPage getTransactionsTxs(BlockdaemonPlatform platform, String address, String continuation) throws ApiException {
+        return accountsRepository.getTransactionsTxs(platform.getValue(), network, address, continuation);
     }
 
     public FeeEstimate getFeeEstimates(BlockdaemonPlatform platform) throws ApiException {
