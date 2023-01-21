@@ -2720,6 +2720,35 @@
           },
           "type": {
             "type": "string"
+          },
+          "meta": {
+            "type": "object",
+            "nullable": true,
+            "properties": {
+              "base_fee": {
+                "type": "integer",
+                "format": "int64",
+                "nullable": true
+              },
+              "fee_burned": {
+                "type": "integer",
+                "format": "int64",
+                "nullable": true
+              },
+              "gas_limit": {
+                "type": "integer",
+                "nullable": true
+              },
+              "gas_price": {
+                "type": "integer",
+                "format": "int64",
+                "nullable": true
+              },
+              "gas_used": {
+                "type": "integer",
+                "nullable": true
+              }
+            }
           }
         }
       },
@@ -2741,6 +2770,18 @@
             "type": "string",
             "description": "ID of block if mined, otherwise omitted.",
             "example": "0xaf2948aba2ed8cc7d5b7d4e4f4164a7c8819efc94d30aab3fce6904df68dbc07",
+            "nullable": true
+          },
+          "block_number": {
+            "type": "integer",
+            "description": "Number of block if mined, otherwise omitted.",
+            "example": "123456",
+            "nullable": true
+          },
+          "confirmations": {
+            "type": "integer",
+            "description": "Number of confirmations.",
+            "example": "123456",
             "nullable": true
           },
           "status": {
