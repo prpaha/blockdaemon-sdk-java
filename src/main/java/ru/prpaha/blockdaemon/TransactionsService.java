@@ -53,9 +53,9 @@ public class TransactionsService {
         return new FeeEstimate()
                 .mostRecentBlock(ethereumFeeEstimates.getMostRecentBlock())
                 .estimatedFees(new FeeEstimateEstimatedFees()
-                        .fast(ethereumFeeEstimates.getEstimatedFees().getFast().getMaxPriorityFee())
-                        .medium(ethereumFeeEstimates.getEstimatedFees().getMedium().getMaxPriorityFee())
-                        .slow(ethereumFeeEstimates.getEstimatedFees().getSlow().getMaxPriorityFee()));
+                        .fast(ethereumFeeEstimates.getEstimatedFees().getFast().getMaxTotalFee())
+                        .medium(ethereumFeeEstimates.getEstimatedFees().getMedium().getMaxTotalFee())
+                        .slow(ethereumFeeEstimates.getEstimatedFees().getSlow().getMaxTotalFee()));
     }
 
     public BlockInfo getCurrentBlockInfo(@NotNull BlockdaemonPlatform platform) throws ApiException {
