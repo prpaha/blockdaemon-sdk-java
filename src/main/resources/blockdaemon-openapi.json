@@ -2747,6 +2747,14 @@
               "gas_used": {
                 "type": "integer",
                 "nullable": true
+              },
+              "contract": {
+                "type": "string",
+                "nullable": true
+              },
+              "type": {
+                "type": "string",
+                "nullable": true
               }
             }
           }
@@ -2813,6 +2821,10 @@
             "items": {
               "$ref": "#/components/schemas/event"
             },
+            "nullable": true
+          },
+          "meta": {
+            "type": "object",
             "nullable": true
           }
         }

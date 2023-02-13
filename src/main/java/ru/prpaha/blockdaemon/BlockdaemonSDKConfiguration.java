@@ -1,7 +1,5 @@
 package ru.prpaha.blockdaemon;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.jnet.common.backend.service.configuration.YamlPropertySourceFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -39,13 +37,8 @@ public class BlockdaemonSDKConfiguration {
     }
 
     @Bean
-    public Gson gson() {
-        return new GsonBuilder().setDateFormat(BlockdaemonConstants.DATE_TIME_FORMAT).create();
-    }
-
-    @Bean
-    public AccountsRepository accountRepository(AccountsApi accountsApi, Gson gson) {
-        return new AccountsRepository(accountsApi, gson);
+    public AccountsRepository accountRepository(AccountsApi accountsApi) {
+        return new AccountsRepository(accountsApi);
     }
 
     @Bean
@@ -54,8 +47,8 @@ public class BlockdaemonSDKConfiguration {
     }
 
     @Bean
-    public TransactionsRepository transactionsRepository(TransactionsApi transactionsApi, Gson gson) {
-        return new TransactionsRepository(transactionsApi, gson);
+    public TransactionsRepository transactionsRepository(TransactionsApi transactionsApi) {
+        return new TransactionsRepository(transactionsApi);
     }
 
     @Bean
@@ -64,8 +57,8 @@ public class BlockdaemonSDKConfiguration {
     }
 
     @Bean
-    public PlatformsRepository platformsRepository(SyncApi syncApi, Gson gson) {
-        return new PlatformsRepository(syncApi, gson);
+    public PlatformsRepository platformsRepository(SyncApi syncApi) {
+        return new PlatformsRepository(syncApi);
     }
 
     private ApiClient createApiClient() {

@@ -1,15 +1,13 @@
 package ru.prpaha.blockdaemon.repository;
 
-import com.google.gson.Gson;
 import ru.prpaha.blockdaemon.api.SyncApi;
 import ru.prpaha.blockdaemon.invoker.ApiException;
 
-public class PlatformsRepository extends AbstractApiRepository {
+public class PlatformsRepository {
 
     private final SyncApi syncApi;
 
-    public PlatformsRepository(SyncApi syncApi, Gson gson) {
-        super(gson);
+    public PlatformsRepository(SyncApi syncApi) {
         this.syncApi = syncApi;
     }
 

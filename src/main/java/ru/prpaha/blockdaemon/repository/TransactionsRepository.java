@@ -1,6 +1,5 @@
 package ru.prpaha.blockdaemon.repository;
 
-import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.jetbrains.annotations.NotNull;
 import ru.prpaha.blockdaemon.api.TransactionsApi;
@@ -10,12 +9,11 @@ import ru.prpaha.blockdaemon.model.FeeEstimate;
 import ru.prpaha.blockdaemon.model.SignedTx;
 import ru.prpaha.blockdaemon.model.TxReceipt;
 
-public class TransactionsRepository extends AbstractApiRepository {
+public class TransactionsRepository {
 
     private final TransactionsApi transactionsApi;
 
-    public TransactionsRepository(TransactionsApi transactionsApi, Gson gson) {
-        super(gson);
+    public TransactionsRepository(TransactionsApi transactionsApi) {
         this.transactionsApi = transactionsApi;
     }
 

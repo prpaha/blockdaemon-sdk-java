@@ -1,17 +1,15 @@
 package ru.prpaha.blockdaemon.repository;
 
-import com.google.gson.Gson;
 import ru.prpaha.blockdaemon.api.AccountsApi;
 import ru.prpaha.blockdaemon.invoker.ApiException;
 import ru.prpaha.blockdaemon.model.TxOutputs;
 import ru.prpaha.blockdaemon.model.TxPage;
 
-public class AccountsRepository extends AbstractApiRepository {
+public class AccountsRepository {
 
     private final AccountsApi accountsApi;
 
-    public AccountsRepository(AccountsApi accountsApi, Gson gson) {
-        super(gson);
+    public AccountsRepository(AccountsApi accountsApi) {
         this.accountsApi = accountsApi;
     }
 
