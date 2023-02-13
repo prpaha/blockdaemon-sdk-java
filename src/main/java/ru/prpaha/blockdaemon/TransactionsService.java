@@ -43,8 +43,14 @@ public class TransactionsService {
 
     public TxPage getTransactionsTxs(@NotNull BlockdaemonPlatform platform,
                                      @NotNull String address,
-                                     String continuation) throws ApiException {
-        return accountsRepository.getTransactionsTxs(platform.getValue(), network, address, continuation);
+                                     String continuation,
+                                     Integer limit) throws ApiException {
+        return accountsRepository.getTransactionsTxs(
+                platform.getValue(),
+                network,
+                address,
+                continuation,
+                limit == null ? MAX_TRANSACTIONS_COUNT : limit);
     }
 
     public FeeEstimate getFeeEstimates(@NotNull BlockdaemonPlatform platform) throws ApiException {

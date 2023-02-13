@@ -21,10 +21,10 @@ public class AccountsRepository extends AbstractApiRepository {
                 null, null, null, "asc", continuation, limit);
     }
 
-    public TxPage getTransactionsTxs(String platform, String network, String address, String continuation)
+    public TxPage getTransactionsTxs(String platform, String network, String address, String continuation, int limit)
             throws ApiException {
         return accountsApi.getTxsByAddress(platform, network, address,
-                null, null, null, "asc", continuation, null);
+                null, null, null, "asc", continuation, limit);
     }
 
 }
