@@ -15,10 +15,10 @@ public class AccountsRepository extends AbstractApiRepository {
         this.accountsApi = accountsApi;
     }
 
-    public TxOutputs getTransactionsUtxo(String platform, String network, String address, String continuation)
+    public TxOutputs getTransactionsUtxo(String platform, String network, String address, String continuation, int limit)
             throws ApiException {
         return accountsApi.getUTXOByAccount(platform, network, address,
-                null, null, null, "asc", continuation, null);
+                null, null, null, "asc", continuation, limit);
     }
 
     public TxPage getTransactionsTxs(String platform, String network, String address, String continuation)

@@ -27,10 +27,18 @@ public class TransactionsService {
     @Value("${blockdaemon.network}")
     private String network;
 
+    private static final int MAX_TRANSACTIONS_COUNT = 100;
+
     public TxOutputs getTransactions(@NotNull BlockdaemonPlatform platform,
                                      @NotNull String address,
-                                     String continuation) throws ApiException {
-        return accountsRepository.getTransactionsUtxo(platform.getValue(), network, address, continuation);
+                                     String continuation,
+                                     Integer limit) throws ApiException {
+        return accountsRepository.getTransactionsUtxo(
+                platform.getValue(),
+                network,
+                address,
+                continuation,
+                limit == null ? MAX_TRANSACTIONS_COUNT : limit);
     }
 
     public TxPage getTransactionsTxs(@NotNull BlockdaemonPlatform platform,
