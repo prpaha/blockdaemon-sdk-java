@@ -2,12 +2,8 @@ buildscript {
     repositories {
         gradlePluginPortal()
         mavenCentral()
-        maven {
-            url 'https://plugins.gradle.org/m2/'
-        }
-        maven {
-            url 'https://repo.hindsightsoftware.com/public-maven'
-        }
+        maven { url 'https://plugins.gradle.org/m2/' }
+        maven { url 'https://repo.hindsightsoftware.com/public-maven' }
         maven { url "https://repo1.maven.org/maven2" }
     }
 
@@ -26,7 +22,6 @@ apply plugin: 'maven-publish'
 apply plugin: 'org.openapi.generator'
 
 repositories {
-    mavenLocal()
     mavenCentral()
     maven {
         url 'https://repo.spring.io/libs-milestone'
@@ -37,23 +32,51 @@ repositories {
     maven {
         url "https://packages.confluent.io/maven/"
     }
+    maven {
+        name = "PrPaha-Artifacts"
+        url = uri("https://maven.pkg.github.com/pavel-proskurin-secure/maven-repository")
+        credentials {
+            username = project.property("ARTIFACTIRY_USER")
+            password = project.property("ARTIFACTIRY_PASS")
+        }
+    }
 }
 
 ext {
-    libVersion = '0.0.9'
+    moduleVersion = '0.0.9'
+    moduleGroup = 'ru.prpaha'
+    moduleName = 'blockdaemon-sdk-java'
+    applicationName = 'blockdaemon-sdk-java'
+    applicationDescription = 'Blockdaemon SDK for Java'
 }
 
-version = "${libVersion}"
+version = "${moduleVersion}"
 
 publishing {
     repositories {
-        mavenLocal()
+        maven {
+            name = "PrPaha-Artifacts"
+            url = uri("https://maven.pkg.github.com/pavel-proskurin-secure/maven-repository")
+            credentials {
+                username = project.property("ARTIFACTIRY_USER")
+                password = project.property("ARTIFACTIRY_PASS")
+            }
+        }
     }
     publications {
-        mavenJava(MavenPublication) {
-            groupId 'ru.prpaha'
+        gpr(MavenPublication) {
+            groupId = "${moduleGroup}"
+            artifactId = "${moduleName}"
+            version = "${moduleVersion}"
 
-            artifact "build/libs/blockdaemon-sdk-java-${libVersion}.jar"
+            from components.java
+
+            pom {
+                packaging = "jar"
+                name.set("${applicationName}-" + project.name)
+                description.set("${applicationDescription}")
+                url.set("https://maven.pkg.github.com/pavel-proskurin-secure/maven-repository")
+            }
         }
     }
 }
