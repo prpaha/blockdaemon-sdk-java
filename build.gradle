@@ -36,8 +36,8 @@ repositories {
         name = "PrPaha-Artifacts"
         url = uri("https://maven.pkg.github.com/pavel-proskurin-secure/maven-repository")
         credentials {
-            username = project.property("ARTIFACTIRY_USER")
-            password = project.property("ARTIFACTIRY_PASS")
+            username = project.property("MAVEN_ARTIFACTORY_USER")
+            password = project.property("MAVEN_ARTIFACTORY_PASS")
         }
     }
 }
@@ -58,8 +58,8 @@ publishing {
             name = "PrPaha-Artifacts"
             url = uri("https://maven.pkg.github.com/pavel-proskurin-secure/maven-repository")
             credentials {
-                username = project.property("ARTIFACTIRY_USER")
-                password = project.property("ARTIFACTIRY_PASS")
+                username = project.property("MAVEN_ARTIFACTORY_USER")
+                password = project.property("MAVEN_ARTIFACTORY_PASS")
             }
         }
     }
@@ -131,7 +131,7 @@ dependencies {
     implementation 'javax.annotation:javax.annotation-api:1.3.2'
     implementation 'commons-io:commons-io:2.11.0'
     implementation 'org.slf4j:slf4j-api:1.7.32'
-    implementation 'com.jnet.common.backend:common-service:1.1.1-SNAPSHOT'
+    implementation 'com.jnet.common.backend:common-service:1.1.2-SNAPSHOT'
 
     implementation 'com.google.code.gson:gson:2.10.1'
     fatJar 'com.google.code.gson:gson:2.10.1'
