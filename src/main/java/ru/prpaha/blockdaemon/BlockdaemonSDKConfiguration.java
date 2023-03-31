@@ -1,6 +1,7 @@
 package ru.prpaha.blockdaemon;
 
 import com.jnet.common.backend.service.configuration.YamlPropertySourceFactory;
+import org.openapitools.jackson.nullable.JsonNullableModule;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -66,6 +67,7 @@ public class BlockdaemonSDKConfiguration {
         ((HttpBearerAuth)apiClient.getAuthentication("bearerAuth")).setBearerToken(blockDaemonApiKey);
         apiClient.setDateFormat(new SimpleDateFormat(BlockdaemonConstants.DATE_TIME_FORMAT));
         apiClient.setDebugging(debugging);
+        apiClient.getObjectMapper().registerModule(new JsonNullableModule());
         return apiClient;
     }
 

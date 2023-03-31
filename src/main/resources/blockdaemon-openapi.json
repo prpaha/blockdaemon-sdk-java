@@ -3812,6 +3812,26 @@
             "type": "integer",
             "description": "the number of confirmations the transaction took in order to be mined",
             "example": 1619
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "addresses": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "index": {
+                "type": "integer"
+              },
+              "script": {
+                "type": "string"
+              },
+              "script_type": {
+                "type": "string"
+              }
+            }
           }
         }
       },

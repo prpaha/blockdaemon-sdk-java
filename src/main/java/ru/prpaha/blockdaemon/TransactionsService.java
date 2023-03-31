@@ -1,7 +1,6 @@
 package ru.prpaha.blockdaemon;
 
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import ru.prpaha.blockdaemon.dto.BlockInfo;
@@ -15,6 +14,8 @@ import ru.prpaha.blockdaemon.model.TxReceipt;
 import ru.prpaha.blockdaemon.repository.AccountsRepository;
 import ru.prpaha.blockdaemon.repository.PlatformsRepository;
 import ru.prpaha.blockdaemon.repository.TransactionsRepository;
+
+import javax.validation.constraints.NotNull;
 
 @RequiredArgsConstructor
 @Service

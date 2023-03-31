@@ -1,15 +1,15 @@
 package ru.prpaha.blockdaemon.dto;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class EthereumFeeEstimateValue {
 
-    @SerializedName("max_priority_fee")
+    @JsonProperty("max_priority_fee")
     private Long maxPriorityFee;
 
-    @SerializedName("max_total_fee")
+    @JsonProperty("max_total_fee")
     private Long maxTotalFee;
 
 }

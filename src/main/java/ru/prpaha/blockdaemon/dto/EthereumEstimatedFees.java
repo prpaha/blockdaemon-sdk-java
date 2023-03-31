@@ -1,18 +1,18 @@
 package ru.prpaha.blockdaemon.dto;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class EthereumEstimatedFees {
 
-    @SerializedName("fast")
+    @JsonProperty("fast")
     private EthereumFeeEstimateValue fast;
 
-    @SerializedName("medium")
+    @JsonProperty("medium")
     private EthereumFeeEstimateValue medium;
 
-    @SerializedName("slow")
+    @JsonProperty("slow")
     private EthereumFeeEstimateValue slow;
 
 }

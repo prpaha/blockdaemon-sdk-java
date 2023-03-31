@@ -1,15 +1,15 @@
 package ru.prpaha.blockdaemon.dto;
 
-import com.google.gson.annotations.SerializedName;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class EthereumFeeEstimate {
 
-    @SerializedName("most_recent_block")
+    @JsonProperty("most_recent_block")
     private Integer mostRecentBlock;
 
-    @SerializedName("estimated_fees")
+    @JsonProperty("estimated_fees")
     private EthereumEstimatedFees estimatedFees;
 
 }
