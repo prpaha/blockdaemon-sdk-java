@@ -2680,9 +2680,8 @@
         "type": "object",
         "properties": {
           "amount": {
-            "type": "integer",
+            "type": "number",
             "nullable": true,
-            "format": "int64",
             "example": 5000000000
           },
           "block_id": {

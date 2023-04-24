@@ -67,7 +67,8 @@ public class BlockdaemonSDKConfiguration {
         ((HttpBearerAuth)apiClient.getAuthentication("bearerAuth")).setBearerToken(blockDaemonApiKey);
         apiClient.setDateFormat(new SimpleDateFormat(BlockdaemonConstants.DATE_TIME_FORMAT));
         apiClient.setDebugging(debugging);
-        apiClient.getObjectMapper().registerModule(new JsonNullableModule());
+        var objectMapper = apiClient.getObjectMapper();
+        objectMapper.registerModule(new JsonNullableModule());
         return apiClient;
     }
 

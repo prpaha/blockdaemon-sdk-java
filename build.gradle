@@ -43,7 +43,7 @@ repositories {
 }
 
 ext {
-    moduleVersion = '0.0.10'
+    moduleVersion = '0.0.11'
     moduleGroup = 'ru.prpaha'
     moduleName = 'blockdaemon-sdk-java'
     applicationName = 'blockdaemon-sdk-java'
