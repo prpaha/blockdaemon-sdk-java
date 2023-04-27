@@ -8,11 +8,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import ru.prpaha.blockdaemon.api.AccountsApi;
+import ru.prpaha.blockdaemon.api.BlocksApi;
 import ru.prpaha.blockdaemon.api.SyncApi;
 import ru.prpaha.blockdaemon.api.TransactionsApi;
 import ru.prpaha.blockdaemon.invoker.ApiClient;
 import ru.prpaha.blockdaemon.invoker.auth.HttpBearerAuth;
 import ru.prpaha.blockdaemon.repository.AccountsRepository;
+import ru.prpaha.blockdaemon.repository.BlocksRepository;
 import ru.prpaha.blockdaemon.repository.PlatformsRepository;
 import ru.prpaha.blockdaemon.repository.TransactionsRepository;
 
@@ -60,6 +62,16 @@ public class BlockdaemonSDKConfiguration {
     @Bean
     public PlatformsRepository platformsRepository(SyncApi syncApi) {
         return new PlatformsRepository(syncApi);
+    }
+
+    @Bean
+    public BlocksApi blocksApi() {
+        return new BlocksApi(createApiClient());
+    }
+
+    @Bean
+    public BlocksRepository blocksRepository(BlocksApi blocksApi) {
+        return new BlocksRepository(blocksApi);
     }
 
     private ApiClient createApiClient() {

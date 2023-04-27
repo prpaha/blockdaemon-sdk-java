@@ -6,12 +6,14 @@ import org.springframework.stereotype.Service;
 import ru.prpaha.blockdaemon.dto.BlockInfo;
 import ru.prpaha.blockdaemon.dto.EthereumFeeEstimate;
 import ru.prpaha.blockdaemon.invoker.ApiException;
+import ru.prpaha.blockdaemon.model.Block;
 import ru.prpaha.blockdaemon.model.FeeEstimate;
 import ru.prpaha.blockdaemon.model.FeeEstimateEstimatedFees;
 import ru.prpaha.blockdaemon.model.TxOutputs;
 import ru.prpaha.blockdaemon.model.TxPage;
 import ru.prpaha.blockdaemon.model.TxReceipt;
 import ru.prpaha.blockdaemon.repository.AccountsRepository;
+import ru.prpaha.blockdaemon.repository.BlocksRepository;
 import ru.prpaha.blockdaemon.repository.PlatformsRepository;
 import ru.prpaha.blockdaemon.repository.TransactionsRepository;
 
@@ -24,6 +26,7 @@ public class TransactionsService {
     private final AccountsRepository accountsRepository;
     private final TransactionsRepository transactionsRepository;
     private final PlatformsRepository platformsRepository;
+    private final BlocksRepository blocksRepository;
 
     @Value("${blockdaemon.network}")
     private String network;
@@ -83,6 +86,10 @@ public class TransactionsService {
     public TxReceipt sendSignedTransaction(@NotNull BlockdaemonPlatform platform,
                                            @NotNull String signedTransactionHex) throws ApiException {
         return transactionsRepository.sendSignedTransaction(platform.getValue(), network, signedTransactionHex);
+    }
+
+    public Block getBlock(@NotNull BlockdaemonPlatform platform, int blockNumber) throws ApiException {
+        return blocksRepository.getBlockByNumber(platform.getValue(), network, blockNumber);
     }
 
 }
