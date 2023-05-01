@@ -7,6 +7,7 @@ import ru.prpaha.blockdaemon.dto.BlockInfo;
 import ru.prpaha.blockdaemon.dto.EthereumFeeEstimate;
 import ru.prpaha.blockdaemon.invoker.ApiException;
 import ru.prpaha.blockdaemon.model.Block;
+import ru.prpaha.blockdaemon.model.BlockIdentifier;
 import ru.prpaha.blockdaemon.model.FeeEstimate;
 import ru.prpaha.blockdaemon.model.FeeEstimateEstimatedFees;
 import ru.prpaha.blockdaemon.model.TxOutputs;
@@ -90,6 +91,10 @@ public class TransactionsService {
 
     public Block getBlock(@NotNull BlockdaemonPlatform platform, int blockNumber) throws ApiException {
         return blocksRepository.getBlockByNumber(platform.getValue(), network, blockNumber);
+    }
+
+    public BlockIdentifier getBlockIdentifier(@NotNull BlockdaemonPlatform platform, int blockNumber) throws ApiException {
+        return blocksRepository.getBlockInfoByNumber(platform.getValue(), network, blockNumber);
     }
 
 }
